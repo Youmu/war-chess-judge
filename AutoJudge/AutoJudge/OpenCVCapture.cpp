@@ -17,6 +17,7 @@ int OpenCVCapture::StartCapture(void)
 {
 	// Create a thread to capture image.
 	_capture = true;
+	_getImage = false;
 	CWinThread *thread = AfxBeginThread(
 		[](LPVOID arg)
 		{
@@ -28,6 +29,12 @@ int OpenCVCapture::StartCapture(void)
 				{
 					cv::Mat frame;
 					vc>>frame;
+					if(caller->_getImage)
+					{
+						caller->_getImage = false;
+						caller->_image = frame.clone();
+						SetEvent(caller->_hevent);
+					}
 				}
 			}
 			return (UINT)0;
@@ -42,4 +49,18 @@ int OpenCVCapture::StopCapture(void)
 {
 	_capture = false;
 	return 0;
+}
+
+
+cv::Mat OpenCVCapture::GetImage(void)
+{
+	if(_capture)
+	{
+		_hevent = CreateEvent(NULL,TRUE,FALSE,TEXT("GetImageEvent"));
+		_getImage = true;
+		WaitForSingleObject(_hevent,INFINITE);
+		CloseHandle(_hevent);
+		return _image;
+	}
+	return cv::Mat();
 }
