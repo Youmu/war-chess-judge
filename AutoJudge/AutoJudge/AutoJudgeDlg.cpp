@@ -30,6 +30,9 @@ void CAutoJudgeDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CAutoJudgeDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_BUTTON_START, &CAutoJudgeDlg::OnBnClickedButtonStart)
+	ON_BN_CLICKED(IDC_BUTTON_CAPTURE, &CAutoJudgeDlg::OnBnClickedButtonCapture)
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 
@@ -85,3 +88,62 @@ HCURSOR CAutoJudgeDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+
+void CAutoJudgeDlg::OnBnClickedButtonStart()
+{
+	if(_capture.IsRunning())
+		_capture.StopCapture();
+	else
+		_capture.StartCapture();
+}
+
+
+void CAutoJudgeDlg::OnBnClickedButtonCapture()
+{
+	cv::Mat frame = _capture.GetImage();
+	int width    = frame.cols;
+	int height   = frame.rows;
+	int channels = frame.channels();
+	CImage img;
+	img.Create(width, height,8*channels ); //默认图像像素单通道占用1个字节
+
+	//copy values
+	uchar* ps;
+	uchar* pimg = (uchar*)img.GetBits(); //A pointer to the bitmap buffer
+	int step = img.GetPitch();
+
+	for (int i = 0; i < height; ++i)
+	{
+		ps = (frame.ptr<uchar>(i));
+		for ( int j = 0; j < width; ++j )
+		{
+			if ( channels == 1 ) //gray
+			{
+				*(pimg + i*step + j) = ps[j];
+			}
+			else if ( channels == 3 ) //color
+			{
+				for (int k = 0 ; k < 3; ++k )
+				{
+					*(pimg + i*step + j*3 + k ) = ps[j*3 + k];
+				}			
+			}
+		}	
+	}
+	// TODO: Add your message handler code here
+	//CImage img2;
+	//	img2.Load(L"G:\\desert.jpg");
+	CDC *target= this -> GetDC();
+	CRect cr(0,0,frame.cols,frame.rows);
+	img.Draw(target->m_hDC,cr, Gdiplus::InterpolationMode::InterpolationModeDefault);
+	this ->ReleaseDC(target);
+}
+
+
+void CAutoJudgeDlg::OnClose()
+{
+	// TODO: Add your message handler code here and/or call default
+	_capture.StopCapture();
+	CDialogEx::OnClose();
+}

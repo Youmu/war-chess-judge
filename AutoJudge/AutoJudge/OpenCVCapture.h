@@ -12,5 +12,6 @@ public:
 	int StartCapture(void);
 	int StopCapture(void);
 	cv::Mat GetImage(void);
+	bool IsRunning(void);
 };
 

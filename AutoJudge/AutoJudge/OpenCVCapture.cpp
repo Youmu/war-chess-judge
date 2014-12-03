@@ -4,7 +4,7 @@
 
 OpenCVCapture::OpenCVCapture(void)
 {
-
+	_capture = false;
 }
 
 
@@ -63,4 +63,10 @@ cv::Mat OpenCVCapture::GetImage(void)
 		return _image;
 	}
 	return cv::Mat();
+}
+
+
+bool OpenCVCapture::IsRunning(void)
+{
+	return _capture;
 }

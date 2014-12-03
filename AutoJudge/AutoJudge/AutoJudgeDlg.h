@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include "opencvcapture.h"
 
 
 // CAutoJudgeDlg ¶Ô»°¿ò
@@ -28,4 +29,11 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnBnClickedButtonStart();
+	afx_msg void OnBnClickedButtonCapture();
+private:
+	OpenCVCapture _capture;
+public:
+	afx_msg void OnClose();
 };
