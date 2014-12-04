@@ -38,4 +38,5 @@ private:
 	CImage *_image;
 public:
 	afx_msg void OnClose();
+	afx_msg void OnDestroy();
 };

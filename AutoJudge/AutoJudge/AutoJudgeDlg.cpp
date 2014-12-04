@@ -35,6 +35,7 @@ BEGIN_MESSAGE_MAP(CAutoJudgeDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_START, &CAutoJudgeDlg::OnBnClickedButtonStart)
 	ON_BN_CLICKED(IDC_BUTTON_CAPTURE, &CAutoJudgeDlg::OnBnClickedButtonCapture)
 	ON_WM_CLOSE()
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -151,8 +152,14 @@ void CAutoJudgeDlg::OnBnClickedButtonCapture()
 
 void CAutoJudgeDlg::OnClose()
 {
+	CDialogEx::OnClose();
+}
+
+
+void CAutoJudgeDlg::OnDestroy()
+{
 	_capture.StopCapture();
 	if(_targetDC != nullptr) GetDlgItem(IDC_STATIC_IMG1)->ReleaseDC(_targetDC);
 	if(_image != nullptr) delete _image;
-	CDialogEx::OnClose();
+	CDialogEx::OnDestroy();
 }
