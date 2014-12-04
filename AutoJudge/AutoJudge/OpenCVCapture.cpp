@@ -5,6 +5,7 @@
 OpenCVCapture::OpenCVCapture(void)
 {
 	_capture = false;
+	_thread = nullptr;
 }
 
 
@@ -18,7 +19,7 @@ int OpenCVCapture::StartCapture(void)
 	// Create a thread to capture image.
 	_capture = true;
 	_getImage = false;
-	CWinThread *thread = AfxBeginThread(
+	_thread = AfxBeginThread(
 		[](LPVOID arg)
 		{
 			OpenCVCapture *caller = (OpenCVCapture*)arg;
@@ -48,6 +49,7 @@ int OpenCVCapture::StartCapture(void)
 int OpenCVCapture::StopCapture(void)
 {
 	_capture = false;
+	::WaitForSingleObject(_thread->m_hThread, INFINITE);
 	return 0;
 }
 

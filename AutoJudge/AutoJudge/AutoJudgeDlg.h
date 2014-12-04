@@ -34,6 +34,8 @@ public:
 	afx_msg void OnBnClickedButtonCapture();
 private:
 	OpenCVCapture _capture;
+	CDC *_targetDC;
+	CImage *_image;
 public:
 	afx_msg void OnClose();
 };

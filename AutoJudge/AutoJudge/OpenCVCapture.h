@@ -6,6 +6,7 @@ private:
 	bool _getImage;
 	HANDLE _hevent;
 	cv::Mat _image;
+	CWinThread *_thread;
 public:
 	OpenCVCapture(void);
 	~OpenCVCapture(void);

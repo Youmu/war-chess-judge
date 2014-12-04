@@ -19,6 +19,8 @@
 CAutoJudgeDlg::CAutoJudgeDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CAutoJudgeDlg::IDD, pParent)
 {
+	_image = nullptr;
+	_targetDC = nullptr;
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
@@ -48,7 +50,7 @@ BOOL CAutoJudgeDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
-
+	_targetDC = GetDlgItem(IDC_STATIC_IMG1)->GetDC();
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -79,6 +81,12 @@ void CAutoJudgeDlg::OnPaint()
 	{
 		CDialogEx::OnPaint();
 	}
+	if(_targetDC != nullptr)
+	{
+		CRect cr;
+		GetDlgItem(IDC_STATIC_IMG1)->GetClientRect(&cr);
+		_image ->Draw(_targetDC->m_hDC,cr, Gdiplus::InterpolationMode::InterpolationModeDefault);
+	}
 }
 
 //当用户拖动最小化窗口时系统调用此函数取得光标
@@ -101,17 +109,19 @@ void CAutoJudgeDlg::OnBnClickedButtonStart()
 
 void CAutoJudgeDlg::OnBnClickedButtonCapture()
 {
+	if(!_capture.IsRunning()) return;
 	cv::Mat frame = _capture.GetImage();
 	int width    = frame.cols;
 	int height   = frame.rows;
 	int channels = frame.channels();
-	CImage img;
-	img.Create(width, height,8*channels ); //默认图像像素单通道占用1个字节
+	if(_image != nullptr) delete _image;
+	_image = new CImage();
+	_image -> Create(width, height,8*channels ); //默认图像像素单通道占用1个字节
 
 	//copy values
 	uchar* ps;
-	uchar* pimg = (uchar*)img.GetBits(); //A pointer to the bitmap buffer
-	int step = img.GetPitch();
+	uchar* pimg = (uchar*)_image ->GetBits(); //A pointer to the bitmap buffer
+	int step = _image ->GetPitch();
 
 	for (int i = 0; i < height; ++i)
 	{
@@ -131,19 +141,18 @@ void CAutoJudgeDlg::OnBnClickedButtonCapture()
 			}
 		}	
 	}
-	// TODO: Add your message handler code here
-	//CImage img2;
-	//	img2.Load(L"G:\\desert.jpg");
-	CDC *target= this -> GetDC();
-	CRect cr(0,0,frame.cols,frame.rows);
-	img.Draw(target->m_hDC,cr, Gdiplus::InterpolationMode::InterpolationModeDefault);
-	this ->ReleaseDC(target);
+
+	
+	CRect cr;
+	GetDlgItem(IDC_STATIC_IMG1)->GetClientRect(&cr);
+	_image ->Draw(_targetDC->m_hDC,cr, Gdiplus::InterpolationMode::InterpolationModeDefault);
 }
 
 
 void CAutoJudgeDlg::OnClose()
 {
-	// TODO: Add your message handler code here and/or call default
 	_capture.StopCapture();
+	if(_targetDC != nullptr) GetDlgItem(IDC_STATIC_IMG1)->ReleaseDC(_targetDC);
+	if(_image != nullptr) delete _image;
 	CDialogEx::OnClose();
 }
