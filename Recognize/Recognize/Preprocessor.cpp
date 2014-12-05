@@ -52,7 +52,7 @@ std::vector<IplImage*>* Preprocessor::ExtractChess(IplImage* image)
 	return result;
 }
 
-void Preprocessor::GenerateAllSamplesInFolder(string directory, string destination)
+void Preprocessor::GenerateAllSamplesInFolder(const string &directory, const string &destination)
 {
 	std::tr2::sys::path imagePath = directory;
 	if(!exists(imagePath)){
@@ -99,7 +99,7 @@ void Preprocessor::GenerateAllSamplesInFolder(string directory, string destinati
 
 }
 
-void Preprocessor::GenerateTrainingData(string srcDir, string detDir)
+void Preprocessor::GenerateTrainingData(const string &srcDir, const string &detDir)
 {
 	std::tr2::sys::path srcPath = srcDir;
 	if(!exists(srcPath)){
@@ -140,7 +140,7 @@ void Preprocessor::GenerateTrainingData(string srcDir, string detDir)
 	}
 }
 
-void Preprocessor::BuildVocabulary(string trainingDir, string serialDir, string vocabularyname)
+void Preprocessor::BuildVocabulary(const string &trainingDir, const string &serialDir, const string &vocabularyname)
 {
 	std::tr2::sys::path trainingPath = trainingDir;
 	if(!exists(trainingPath)){
@@ -210,7 +210,7 @@ void Preprocessor::BuildVocabulary(string trainingDir, string serialDir, string 
 	fs2.release();
 }
 
-void Preprocessor::ExtractTrainingSet(string trainingDir, Ptr<FeatureDetector> &detector, BOWImgDescriptorExtractor &bowide, map<String, Mat> &trainingData)
+void Preprocessor::ExtractTrainingSet(const string &trainingDir, Ptr<FeatureDetector> &detector, BOWImgDescriptorExtractor &bowide, map<String, Mat> &trainingData)
 {
 	vector<string> classes;
 	std::tr2::sys::path trainingPath = trainingDir;
@@ -262,7 +262,7 @@ void Preprocessor::ExtractTrainingSet(string trainingDir, Ptr<FeatureDetector> &
 }
 
 // 1-to-others SVM
-void Preprocessor::TrainingSVM(map<string,Mat>& trainingData, int response_cols, int response_type, string serialDir, string modelName)
+void Preprocessor::TrainingSVM(map<string,Mat>& trainingData, int response_cols, int response_type, const string &serialDir, const string &modelName)
 {
 	vector<string> classes;
 	for(map<string,Mat>::iterator it = trainingData.begin(); it != trainingData.end(); it++)
@@ -308,7 +308,7 @@ void Preprocessor::TrainingSVM(map<string,Mat>& trainingData, int response_cols,
 		CvSVM classifier;
 		classifier.train(samples_32f, labels);
 
-		string modelFolder = serialDir + "\\" + "modelName";
+		string modelFolder = serialDir + "\\" + modelName;
 		std::tr2::sys::path modelPath = modelFolder;
 		if(!exists(modelPath))
 		{
@@ -320,7 +320,7 @@ void Preprocessor::TrainingSVM(map<string,Mat>& trainingData, int response_cols,
 	}
 }
 
-void Preprocessor::Training(string trainingDir, string serialDir, string vocabularyName, string modelName)
+void Preprocessor::Training(const string &trainingDir, const string &serialDir, const string &vocabularyName, const string &modelName)
 {
 	std::tr2::sys::path trainingPath = trainingDir;
 	if(!exists(trainingPath)){

@@ -3,6 +3,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerCommand>$(TargetPath)</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments> classify D:\sandbox\AmyChess\Test D:\sandbox\AmyChess\Serialization\vacabulary.yml D:\sandbox\AmyChess\Serialization\SVM</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>train D:\sandbox\AmyChess\materials D:\sandbox\AmyChess\Trainning D:\sandbox\war-chess-judge\Serialization vocabulary.yml SVM</LocalDebuggerCommandArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LocalDebuggerCommandArguments>train D:\sandbox\AmyChess\materials D:\sandbox\AmyChess\Trainning D:\sandbox\war-chess-judge\Serialization vocabulary.yml SVM</LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

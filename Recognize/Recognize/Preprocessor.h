@@ -26,14 +26,14 @@ public:
 	~Preprocessor(void);
 
 	std::vector<IplImage*>* ExtractChess(IplImage* image);
-	void GenerateAllSamplesInFolder(string directory, string destination);
-	void GenerateTrainingData(string srcDir, string detDir);
-	void BuildVocabulary(string trainingDir, string serialDir, string vocabularyName);
-	void Training(string trainingDir, string serialDir, string vocabularyName, string modelName);
+	void GenerateAllSamplesInFolder(const string &directory, const string &destination);
+	void GenerateTrainingData(const string &srcDir, const string &detDir);
+	void BuildVocabulary(const string &trainingDir, const string &serialDir, const string &vocabularyName);
+	void Training(const string &trainingDir, const string &serialDir, const string &vocabularyName, const string &modelName);
 
 private:
-	void ExtractTrainingSet(string trainingDir, Ptr<FeatureDetector> &detector, BOWImgDescriptorExtractor &bowide, map<String, Mat> &trainingData);
-	void TrainingSVM(map<string,Mat>& trainingData, int response_cols, int response_type, string serialDir, string modelName);
+	void ExtractTrainingSet(const string &trainingDir, Ptr<FeatureDetector> &detector, BOWImgDescriptorExtractor &bowide, map<String, Mat> &trainingData);
+	void TrainingSVM(map<string,Mat>& trainingData, int response_cols, int response_type, const string &serialDir, const string &modelName);
 
 };
 
