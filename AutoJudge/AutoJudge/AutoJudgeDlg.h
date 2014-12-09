@@ -4,7 +4,7 @@
 
 #pragma once
 #include "opencvcapture.h"
-
+#include "Recognize.h"
 
 // CAutoJudgeDlg ¶Ô»°¿ò
 class CAutoJudgeDlg : public CDialogEx
@@ -36,6 +36,8 @@ private:
 	OpenCVCapture _capture;
 	CDC *_targetDC;
 	CImage *_image;
+	Recognize _recognize;
+	
 public:
 	afx_msg void OnClose();
 	afx_msg void OnDestroy();

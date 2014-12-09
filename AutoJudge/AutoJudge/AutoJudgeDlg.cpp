@@ -22,6 +22,8 @@ CAutoJudgeDlg::CAutoJudgeDlg(CWnd* pParent /*=NULL*/)
 	_image = nullptr;
 	_targetDC = nullptr;
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	// FIXME: do not hard code.
+	_recognize.InitClassifier("G:\\WarChess\\Serialization\\vocabulary.yml","G:\\WarChess\\Serialization\\SVM");
 }
 
 void CAutoJudgeDlg::DoDataExchange(CDataExchange* pDX)
