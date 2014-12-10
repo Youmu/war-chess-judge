@@ -29,6 +29,7 @@ CAutoJudgeDlg::CAutoJudgeDlg(CWnd* pParent /*=NULL*/)
 void CAutoJudgeDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_RESULT, ResultBox);
 }
 
 BEGIN_MESSAGE_MAP(CAutoJudgeDlg, CDialogEx)
@@ -114,13 +115,17 @@ void CAutoJudgeDlg::OnBnClickedButtonCapture()
 {
 	if(!_capture.IsRunning()) return;
 	cv::Mat frame = _capture.GetImage();
+	
 	int width    = frame.cols;
 	int height   = frame.rows;
 	int channels = frame.channels();
 	if(_image != nullptr) delete _image;
 	_image = new CImage();
 	_image -> Create(width, height,8*channels ); //默认图像像素单通道占用1个字节
-
+	IplImage img = frame;
+	std::string result = _recognize.RecognizeImage(&img);
+	CString str = CString(result.c_str());
+	ResultBox.SetWindowText(str);
 	//copy values
 	uchar* ps;
 	uchar* pimg = (uchar*)_image ->GetBits(); //A pointer to the bitmap buffer

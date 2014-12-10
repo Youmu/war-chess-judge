@@ -5,6 +5,7 @@
 #pragma once
 #include "opencvcapture.h"
 #include "Recognize.h"
+#include "afxwin.h"
 
 // CAutoJudgeDlg ¶Ô»°¿ò
 class CAutoJudgeDlg : public CDialogEx
@@ -41,4 +42,5 @@ private:
 public:
 	afx_msg void OnClose();
 	afx_msg void OnDestroy();
+	CEdit ResultBox;
 };

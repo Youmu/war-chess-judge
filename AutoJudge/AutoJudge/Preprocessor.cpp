@@ -28,6 +28,7 @@ std::vector<IplImage*>* Preprocessor::ExtractChess(IplImage* image)
 
 	IplImage* binary_img = cvCreateImage(cvSize(InterestRect.width, InterestRect.height), IPL_DEPTH_8U, 1);
 	cvThreshold(roi_img, binary_img, BinarizationThreshold, 255, CV_THRESH_BINARY);
+//	cvAdaptiveThreshold(roi_img,binary_img,255,CV_ADAPTIVE_THRESH_GAUSSIAN_C,CV_THRESH_BINARY,10);
 
 	CvRect leftRect = cvRect(0, 0, InterestRect.width / 2, InterestRect.height);
 	IplImage* left_img = cvCreateImage(cvSize(leftRect.width, leftRect.height), IPL_DEPTH_8U, 1);
