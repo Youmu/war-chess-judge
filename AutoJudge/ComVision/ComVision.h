@@ -23,6 +23,9 @@ public:
 	int GetHeight(void);
 	int GetChannels(void);
 	unsigned char* GetRow(int i);
+
+	const char* Recognize();
+
 	bool IsRunning();
 };
 

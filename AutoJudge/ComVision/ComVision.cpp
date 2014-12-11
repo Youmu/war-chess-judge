@@ -9,7 +9,8 @@
 
 OpenCVCapture capture;
 cv::Mat frame;
-
+Recognize recognize;
+char result[256];
 
 // This is an example of an exported variable
 COMVISION_API int nRecognizer=0;
@@ -24,6 +25,7 @@ COMVISION_API int fnRecognizer(void)
 // see Recognizer.h for the class definition
 CComVision::CComVision()
 {
+	recognize.InitClassifier("G:\\WarChess\\Serialization\\vocabulary.yml","G:\\WarChess\\Serialization\\SVM");
 	return;
 }
 
@@ -71,4 +73,11 @@ unsigned char* CComVision::GetRow(int i)
 bool CComVision::IsRunning()
 {
 	return capture.IsRunning();
+}
+
+const char* CComVision::Recognize()
+{
+	IplImage img(frame);
+	strcpy_s(result,256,recognize.RecognizeImage(&img).c_str());
+	return result;
 }

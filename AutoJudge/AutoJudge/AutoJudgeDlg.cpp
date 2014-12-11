@@ -121,7 +121,9 @@ void CAutoJudgeDlg::OnBnClickedButtonCapture()
 	_image = new CImage();
 	_image -> Create(width, height,8*channels ); //默认图像像素单通道占用1个字节
 	
-	//ResultBox.SetWindowText(str);
+	const char* result = comvision.Recognize();
+	CString str = CString(result);
+	ResultBox.SetWindowText(str);
 	//copy values
 	unsigned char* ps;
 	unsigned char* pimg = (unsigned char*)_image ->GetBits(); //A pointer to the bitmap buffer
