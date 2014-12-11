@@ -3,10 +3,9 @@
 //
 
 #pragma once
-#include "opencvcapture.h"
-#include "Recognize.h"
 #include "afxwin.h"
 
+#include "ComVision/ComVision.h"
 // CAutoJudgeDlg ¶Ô»°¿ò
 class CAutoJudgeDlg : public CDialogEx
 {
@@ -34,11 +33,9 @@ public:
 	afx_msg void OnBnClickedButtonStart();
 	afx_msg void OnBnClickedButtonCapture();
 private:
-	OpenCVCapture _capture;
 	CDC *_targetDC;
 	CImage *_image;
-	Recognize _recognize;
-	
+	CComVision comvision;
 public:
 	afx_msg void OnClose();
 	afx_msg void OnDestroy();

@@ -11,7 +11,6 @@
 #define new DEBUG_NEW
 #endif
 
-
 // CAutoJudgeDlg 对话框
 
 
@@ -22,8 +21,9 @@ CAutoJudgeDlg::CAutoJudgeDlg(CWnd* pParent /*=NULL*/)
 	_image = nullptr;
 	_targetDC = nullptr;
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	
 	// FIXME: do not hard code.
-	_recognize.InitClassifier("G:\\WarChess\\Serialization\\vocabulary.yml","G:\\WarChess\\Serialization\\SVM");
+	//_recognize.InitClassifier("G:\\WarChess\\Serialization\\vocabulary.yml","G:\\WarChess\\Serialization\\SVM");
 }
 
 void CAutoJudgeDlg::DoDataExchange(CDataExchange* pDX)
@@ -104,36 +104,32 @@ HCURSOR CAutoJudgeDlg::OnQueryDragIcon()
 
 void CAutoJudgeDlg::OnBnClickedButtonStart()
 {
-	if(_capture.IsRunning())
-		_capture.StopCapture();
-	else
-		_capture.StartCapture();
+	comvision.StartCapture();
 }
 
 
 void CAutoJudgeDlg::OnBnClickedButtonCapture()
 {
-	if(!_capture.IsRunning()) return;
-	cv::Mat frame = _capture.GetImage();
 	
-	int width    = frame.cols;
-	int height   = frame.rows;
-	int channels = frame.channels();
+	if(!comvision.IsRunning()) return;
+	comvision.Capture();
+	
+	int width    = comvision.GetWidth();
+	int height   = comvision.GetHeight();
+	int channels = comvision.GetChannels();
 	if(_image != nullptr) delete _image;
 	_image = new CImage();
 	_image -> Create(width, height,8*channels ); //默认图像像素单通道占用1个字节
-	IplImage img = frame;
-	std::string result = _recognize.RecognizeImage(&img);
-	CString str = CString(result.c_str());
-	ResultBox.SetWindowText(str);
+	
+	//ResultBox.SetWindowText(str);
 	//copy values
-	uchar* ps;
-	uchar* pimg = (uchar*)_image ->GetBits(); //A pointer to the bitmap buffer
+	unsigned char* ps;
+	unsigned char* pimg = (unsigned char*)_image ->GetBits(); //A pointer to the bitmap buffer
 	int step = _image ->GetPitch();
 
 	for (int i = 0; i < height; ++i)
 	{
-		ps = (frame.ptr<uchar>(i));
+		ps = comvision.GetRow(i);
 		for ( int j = 0; j < width; ++j )
 		{
 			if ( channels == 1 ) //gray
@@ -165,7 +161,8 @@ void CAutoJudgeDlg::OnClose()
 
 void CAutoJudgeDlg::OnDestroy()
 {
-	_capture.StopCapture();
+	
+	comvision.StopCapture();
 	if(_targetDC != nullptr) GetDlgItem(IDC_STATIC_IMG1)->ReleaseDC(_targetDC);
 	if(_image != nullptr) delete _image;
 	CDialogEx::OnDestroy();

@@ -1,12 +1,13 @@
 #pragma once
+#include "stdafx.h"
 class OpenCVCapture
 {
 private:
 	bool _capture;
 	bool _getImage;
 	HANDLE _hevent;
+	HANDLE m_hThread;
 	cv::Mat _image;
-	CWinThread *_thread;
 public:
 	OpenCVCapture(void);
 	~OpenCVCapture(void);

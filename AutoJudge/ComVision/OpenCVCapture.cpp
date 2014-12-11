@@ -1,11 +1,9 @@
 #include "stdafx.h"
 #include "OpenCVCapture.h"
 
-
 OpenCVCapture::OpenCVCapture(void)
 {
 	_capture = false;
-	_thread = nullptr;
 }
 
 
@@ -19,7 +17,10 @@ int OpenCVCapture::StartCapture(void)
 	// Create a thread to capture image.
 	_capture = true;
 	_getImage = false;
-	_thread = AfxBeginThread(
+	DWORD dwThreadId;
+	m_hThread = CreateThread(
+		NULL,
+		0,
 		[](LPVOID arg)
 		{
 			OpenCVCapture *caller = (OpenCVCapture*)arg;
@@ -38,9 +39,11 @@ int OpenCVCapture::StartCapture(void)
 					}
 				}
 			}
-			return (UINT)0;
+			return (DWORD)0;
 		},
-		this
+		this,
+		0,
+		&dwThreadId
 		);
 	return 0;
 }
@@ -49,7 +52,7 @@ int OpenCVCapture::StartCapture(void)
 int OpenCVCapture::StopCapture(void)
 {
 	_capture = false;
-	::WaitForSingleObject(_thread->m_hThread, INFINITE);
+	WaitForSingleObject(m_hThread, INFINITE);
 	return 0;
 }
 
