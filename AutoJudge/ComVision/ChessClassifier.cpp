@@ -80,7 +80,9 @@ string ChessClassifier::classify(IplImage* image)
 	Mat img(image);
 	vector<KeyPoint> keypoints;
 	Mat response_hist;
+	//cvSaveImage("d:\\test.jpg", image);
 	Detector->detect(img, keypoints);
+	if (keypoints.size() == 0)return "Nothing";
 	Bowide->compute(img, keypoints, response_hist);
 
 	std::cout << "Classifying ..." << endl;

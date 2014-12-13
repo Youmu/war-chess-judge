@@ -89,7 +89,8 @@ void CAutoJudgeDlg::OnPaint()
 	{
 		CRect cr;
 		GetDlgItem(IDC_STATIC_IMG1)->GetClientRect(&cr);
-		_image ->Draw(_targetDC->m_hDC,cr, Gdiplus::InterpolationMode::InterpolationModeDefault);
+		if(_image != nullptr)
+			_image ->Draw(_targetDC->m_hDC,cr, Gdiplus::InterpolationMode::InterpolationModeDefault);
 	}
 }
 
