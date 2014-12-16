@@ -1,0 +1,5 @@
+PROJECT(WarChess)
+INCLUDE_DIRECTORIES("/opt/sysroot/usr/local/include/")
+LINK_DIRECTORIES("/opt/sysroot/usr/local/lib")
+LINK_LIBRARIES(opencv_core opencv_highgui opencv_imgproc)
+ADD_EXECUTABLE(warchess capture.cpp)
