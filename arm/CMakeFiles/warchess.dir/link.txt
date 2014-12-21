@@ -1,0 +1,1 @@
+/usr/bin/c++       CMakeFiles/warchess.dir/capture.o  -o warchess -rdynamic 

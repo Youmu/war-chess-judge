@@ -1,5 +1,23 @@
 PROJECT(WarChess)
-INCLUDE_DIRECTORIES("/opt/sysroot/usr/local/include/")
-LINK_DIRECTORIES("/opt/sysroot/usr/local/lib")
-LINK_LIBRARIES(opencv_core opencv_highgui opencv_imgproc)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+#INCLUDE_DIRECTORIES("/opt/sysroot/usr/local/include/")
+#LINK_DIRECTORIES("/opt/sysroot/usr/local/lib")
+SET(CMAKE_TOOLCHAIN_FILE cmake/modules/arm.cmake)
+SET(CMAKE_SOURCE_DIR .)
+SET(CMAKE_MODULE_PATH ${CMAKE_ROOT}/Modules ${CMAKE_SOURCE_DIR}/cmake/modules)
+AUX_SOURCE_DIRECTORY(. DIR_SRCS)
+#LINK_LIBRARIES(opencv_core opencv_highgui opencv_imgproc)
 ADD_EXECUTABLE(warchess capture.cpp)
+FIND_PACKAGE(libcv REQUIRED)
+#FIND_PACKAGE(libopencv_highgui REQUIRED)
+#FIND_PACKAGE(libopencv_imgproc REQUIRED)
+MARK_AS_ADVANCED(
+	LIBCV_CXX_INCLUDE_DIR
+	LIBCV_CXX_LIBRARIES
+	)
+
+IF (LIBDB_CXX_INCLUDE_DIR AND LIBDB_CXX_LIBRARIES)
+	MESSAGE(STATUS "Found libcv libraries")
+	INCLUDE_DIRECTORIES(${LIBDB_CXX_INCLUDE_DIR})
+	TARGET_LINK_LIBRARIES(main ${LIBCV_CXX_LIBRARIES})
+ENDIF (LIBDB_CXX_INCLUDE_DIR AND LIBDB_CXX_LIBRARIES) 
