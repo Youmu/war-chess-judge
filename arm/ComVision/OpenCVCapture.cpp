@@ -1,5 +1,8 @@
-#include "stdafx.h"
 #include "OpenCVCapture.h"
+#include "iostream"
+using namespace std;
+
+void* capture_thr(void *arg);
 
 OpenCVCapture::OpenCVCapture(void)
 {
@@ -17,42 +20,44 @@ int OpenCVCapture::StartCapture(void)
 	// Create a thread to capture image.
 	_capture = true;
 	_getImage = false;
-	DWORD dwThreadId;
-	m_hThread = CreateThread(
-		NULL,
-		0,
-		[](LPVOID arg)
-		{
-			OpenCVCapture *caller = (OpenCVCapture*)arg;
-			cv::VideoCapture vc(0);
-			if(vc.isOpened() && caller->_capture)
-			{
-				while(caller->_capture)
-				{
-					cv::Mat frame;
-					vc>>frame;
-					if(caller->_getImage)
-					{
-						caller->_getImage = false;
-						caller->_image = frame.clone();
-						SetEvent(caller->_hevent);
-					}
-				}
-			}
-			return (DWORD)0;
-		},
-		this,
-		0,
-		&dwThreadId
-		);
+	//Create capture Thread
+	int err;
+	pthread_cond_init(&m_cond, NULL);
+	pthread_mutex_init(&m_mutex, NULL);
+	err = pthread_create(&m_captid, NULL, capture_thr, this);
 	return 0;
 }
 
+void* capture_thr(void* arg)
+{	
+	OpenCVCapture *caller = (OpenCVCapture*)arg;
+	cv::VideoCapture vc(0);
+	if(vc.isOpened() && caller->_capture)
+	{
+		while(caller->_capture)
+		{
+			cv::Mat frame;
+			vc>>frame;
+			pthread_mutex_lock(&caller->m_mutex);
+			if(caller->_getImage)
+			{
+				caller->_getImage = false;
+				caller->_image = frame.clone();
+				pthread_cond_signal(&caller->m_cond);
+				cout<<"signal m_cond"<<endl;
+			}
+			pthread_mutex_unlock(&caller->m_mutex);
+		}
+	}
+	return 0;
+}
 
 int OpenCVCapture::StopCapture(void)
 {
+	void* tret;
 	_capture = false;
-	WaitForSingleObject(m_hThread, INFINITE);
+	pthread_join(m_captid, &tret);
+	pthread_cond_destroy(&m_cond);
 	return 0;
 }
 
@@ -61,10 +66,12 @@ cv::Mat OpenCVCapture::GetImage(void)
 {
 	if(_capture)
 	{
-		_hevent = CreateEvent(NULL,TRUE,FALSE,TEXT("GetImageEvent"));
+		cout<<"lock mutex"<<endl;
+		pthread_mutex_lock(&m_mutex);
 		_getImage = true;
-		WaitForSingleObject(_hevent,INFINITE);
-		CloseHandle(_hevent);
+		cout<<"wait nutex"<<endl;
+		pthread_cond_wait(&m_cond, &m_mutex);
+		pthread_mutex_unlock(&m_mutex);
 		return _image;
 	}
 	return cv::Mat();

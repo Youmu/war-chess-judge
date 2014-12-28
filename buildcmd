@@ -1,0 +1,2 @@
+cmake ../arm/ -DCMAKE_TOOLCHAIN_FILE=platform/arm.cmake
+
